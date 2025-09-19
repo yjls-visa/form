@@ -1,28 +1,126 @@
 <!DOCTYPE html>
-<html>
+<html lang="vi">
 <head>
   <meta charset="UTF-8">
   <title>Form nhập liệu</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 800px; margin: auto; }
+    label { display: block; margin-top: 12px; font-weight: bold; }
+    input, textarea, select { width: 100%; padding: 6px; margin-top: 4px; }
+    .group { border: 1px solid #ccc; padding: 10px; margin-top: 15px; }
+    .sub { background: #f9f9f9; padding: 10px; margin-top: 10px; }
+    button { margin-top: 20px; padding: 10px 20px; }
+  </style>
 </head>
 <body>
   <h2>Form nhập liệu</h2>
   <form id="myForm">
-    <input type="text" name="name" placeholder="Họ tên" required><br><br>
-    <input type="email" name="email" placeholder="Email" required><br><br>
-    <textarea name="message" placeholder="Nội dung"></textarea><br><br>
+
+    <label>Họ tên (không dấu, tiếng Anh)</label>
+    <input type="text" name="name" required>
+
+    <label>Ngày sinh (dd-mm-yyyy)</label>
+    <input type="text" name="dob" placeholder="dd-mm-yyyy" required>
+
+    <label>Mã số học sinh</label>
+    <input type="text" name="studentId" required>
+
+    <label>Địa chỉ hiện tại</label>
+    <textarea name="address" required></textarea>
+
+    <label>Số điện thoại</label>
+    <input type="text" name="phone" required>
+
+    <label>Email</label>
+    <input type="email" name="email" required>
+
+    <!-- Người đang ở cùng -->
+    <div class="group">
+      <label>Số người đang ở cùng</label>
+      <input type="number" name="numRoommates" min="0" value="0">
+
+      <div class="sub">
+        <p><b>Thông tin người ở cùng (nếu có)</b></p>
+        <label>Họ tên</label>
+        <input type="text" name="roommateName">
+        <label>Mối quan hệ</label>
+        <input type="text" name="roommateRelation">
+        <label>Quốc tịch</label>
+        <input type="text" name="roommateNationality">
+        <label>Ngày sinh</label>
+        <input type="text" name="roommateDob" placeholder="dd-mm-yyyy">
+        <label>Mã số thẻ ngoại kiều</label>
+        <input type="text" name="roommateCard">
+        <label>Tên công ty / Trường học</label>
+        <input type="text" name="roommateOrg">
+      </div>
+    </div>
+
+    <!-- Người thân ở Nhật -->
+    <div class="group">
+      <label>Có người thân ở Nhật?</label>
+      <select name="hasRelative">
+        <option value="không">Không</option>
+        <option value="có">Có</option>
+      </select>
+
+      <div class="sub">
+        <p><b>Thông tin người thân (nếu có)</b></p>
+        <label>Họ tên</label>
+        <input type="text" name="relativeName">
+        <label>Mối quan hệ</label>
+        <input type="text" name="relativeRelation">
+        <label>Quốc tịch</label>
+        <input type="text" name="relativeNationality">
+        <label>Ngày sinh</label>
+        <input type="text" name="relativeDob" placeholder="dd-mm-yyyy">
+        <label>Mã số thẻ ngoại kiều</label>
+        <input type="text" name="relativeCard">
+        <label>Tên công ty / Trường học</label>
+        <input type="text" name="relativeOrg">
+      </div>
+    </div>
+
+    <label>Tiền nhà hàng tháng (yên)</label>
+    <input type="number" name="rent">
+
+    <label>Sinh hoạt phí hàng tháng (yên)</label>
+    <input type="number" name="livingCost">
+
+    <!-- Tiền chuyển từ nước ngoài -->
+    <div class="group">
+      <p><b>Số tiền chuyển từ nước ngoài đến Nhật</b></p>
+      <label>Số tiền</label>
+      <input type="number" name="moneyTransferAmount">
+      <label>Ngày chuyển</label>
+      <input type="text" name="moneyTransferDate" placeholder="dd-mm-yyyy">
+    </div>
+
+    <!-- Tiền mang từ nước ngoài -->
+    <div class="group">
+      <p><b>Số tiền mang từ nước ngoài đến Nhật</b></p>
+      <label>Số tiền</label>
+      <input type="number" name="moneyCarryAmount">
+      <label>Ngày mang sang</label>
+      <input type="text" name="moneyCarryDate" placeholder="dd-mm-yyyy">
+      <label>Họ tên người mang sang</label>
+      <input type="text" name="moneyCarrierName">
+      <label>Quan hệ</label>
+      <input type="text" name="moneyCarrierRelation">
+    </div>
+
     <button type="submit">Gửi</button>
   </form>
 
   <script>
-    const scriptURL = "https://script.google.com/a/macros/aiko.ac.jp/s/AKfycbyQkyiqMU7viJJsJWDy0DR_9L6bYyzZoMl1CBoLcJNAjYL5csM8BSUx9aBtH7y1x5PR/exec"; // URL vừa deploy Apps Script
+    const scriptURL = "YOUR_GOOGLE_APPS_SCRIPT_URL"; // Thay bằng URL web app Apps Script
 
     document.getElementById("myForm").addEventListener("submit", e => {
       e.preventDefault();
-      const formData = {
-        name: e.target.name.value,
-        email: e.target.email.value,
-        message: e.target.message.value
-      };
+      const form = e.target;
+      const formData = {};
+      new FormData(form).forEach((value, key) => formData[key] = value);
+
       fetch(scriptURL, {
         method: "POST",
         body: JSON.stringify(formData),
